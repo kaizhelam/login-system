@@ -6,49 +6,64 @@
         $email = $_POST["email"];
         $password = $_POST["password"];
 
-        $result = mysqli_query($connect, "INSERT INTO login (email, password, status) VALUES ('$email', '$password', 0)");
+        $check_query = mysqli_query($connect, "SELECT * FROM login where email ='$email'");
+        $rowCount = mysqli_num_rows($check_query);
 
-        if($result){
-            $otp = rand(100000,999999);
-            $_SESSION['otp'] = $otp;
-          	$_SESSION['mail'] = $email;
-            require "Mail/phpmailer/PHPMailerAutoload.php";
-            $mail = new PHPMailer;
+        if(!empty($email) && !empty($password)){
+            if($rowCount > 0){
+                ?>
+                <script>
+                    alert("User with email already exist!");
+                </script>
+                <?php
+            }else{
+                $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
-            $mail->isSMTP();
-            $mail->Host='smtp.gmail.com';
-            $mail->Port=587;
-            $mail->SMTPAuth=true;
-            $mail->SMTPSecure='tls';
-
-            $mail->Username='your email account';
-            $mail->Password='your email password';
-
-            $mail->setFrom('your email account', 'OTP Verification');
-            $mail->addAddress($_POST["email"]);
-
-            $mail->isHTML(true);
-            $mail->Subject="Your verify code";
-            $mail->Body="<p>Dear user, </p> <h3>Your verify OTP code is $otp <br></h3>
-            <br><br>
-            <p>With regrads,</p>
-            <b>Programming with Lam</b>
-            https://www.youtube.com/channel/UCKRZp3mkvL1CBYKFIlxjDdg";
-
-                    if(!$mail->send()){
-                        ?>
-                            <script>
-                                alert("<?php echo "Register Failed, Invalid Email "?>");
-                            </script>
-                        <?php
-                    }else{
-                        ?>
-                        <script>
-                            alert("<?php echo "Register Successfully, OTP sent to " . $email ?>");
-                            window.location.replace('verification.php');
-                        </script>
-                        <?php
-                    }
+                $result = mysqli_query($connect, "INSERT INTO login (email, password, status) VALUES ('$email', '$password_hash', 0)");
+    
+                if($result){
+                    $otp = rand(100000,999999);
+                    $_SESSION['otp'] = $otp;
+                    $_SESSION['mail'] = $email;
+                    require "Mail/phpmailer/PHPMailerAutoload.php";
+                    $mail = new PHPMailer;
+    
+                    $mail->isSMTP();
+                    $mail->Host='smtp.gmail.com';
+                    $mail->Port=587;
+                    $mail->SMTPAuth=true;
+                    $mail->SMTPSecure='tls';
+    
+                    $mail->Username='lamkaizhe2001@gmail.com';
+                    $mail->Password='lam123456789';
+    
+                    $mail->setFrom('lamkaizhe2001@gmail.com', 'OTP Verification');
+                    $mail->addAddress($_POST["email"]);
+    
+                    $mail->isHTML(true);
+                    $mail->Subject="Your verify code";
+                    $mail->Body="<p>Dear user, </p> <h3>Your verify OTP code is $otp <br></h3>
+                    <br><br>
+                    <p>With regrads,</p>
+                    <b>Programming with Lam</b>
+                    https://www.youtube.com/channel/UCKRZp3mkvL1CBYKFIlxjDdg";
+    
+                            if(!$mail->send()){
+                                ?>
+                                    <script>
+                                        alert("<?php echo "Register Failed, Invalid Email "?>");
+                                    </script>
+                                <?php
+                            }else{
+                                ?>
+                                <script>
+                                    alert("<?php echo "Register Successfully, OTP sent to " . $email ?>");
+                                    window.location.replace('verification.php');
+                                </script>
+                                <?php
+                            }
+                }
+            }
         }
     }
 
