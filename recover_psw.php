@@ -106,11 +106,11 @@
             $mail->SMTPSecure='tls';
 
             // h-hotel account
-            $mail->Username='lamkaizhe2001@gmail.com';
-            $mail->Password='lam123456789';
+            $mail->Username='email account';
+            $mail->Password='email password';
 
             // send by h-hotel email
-            $mail->setFrom('lamkaizhe2001@gmail.com', 'Password Reset');
+            $mail->setFrom('email', 'Password Reset');
             // get email from input
             $mail->addAddress($_POST["email"]);
             //$mail->addReplyTo('lamkaizhe16@gmail.com');
