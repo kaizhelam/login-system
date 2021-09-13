@@ -77,10 +77,15 @@ include('connect/connection.php');
         $token = $_SESSION['token'];
         $Email = $_SESSION['email'];
 
-        $sql = mysqli_query($connect, "SELECT * FROM login WHERE email='$Email'");
+        $hash = password_hash( $psw , PASSWORD_DEFAULT );
 
-        if($sql){
-            mysqli_query($connect, "UPDATE login SET password='$psw' WHERE email='$Email'");
+        $sql = mysqli_query($connect, "SELECT * FROM login WHERE email='$Email'");
+        $query = mysqli_num_rows($sql);
+  	    $fetch = mysqli_fetch_assoc($sql);
+
+        if($Email){
+            $new_pass = $hash;
+            mysqli_query($connect, "UPDATE login SET password='$new_pass' WHERE email='$Email'");
             ?>
             <script>
                 window.location.replace("index.php");
