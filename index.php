@@ -2,29 +2,37 @@
     include('connect/connection.php');
 
     if(isset($_POST["login"])){
-        $emai = $_POST["email"];
-        $password = $_POST["password"];
+        $email = mysqli_real_escape_string($connect, trim($_POST['email']));
+        $password = trim($_POST['password']);
 
-        $result = mysqli_query($connect, "SELECT * FROM login");
-        $count = mysqli_num_rows($result);
+        $sql = mysqli_query($connect, "SELECT * FROM login where email = '$email'");
+        $count = mysqli_num_rows($sql);
 
-        if($count > 0){
-            $fetch = mysqli_fetch_assoc($result);
-
-            if($fetch["email"] == $emai && $fetch["password"] == $password){
-                ?>
-                <script>
-                    alert("login in successfully");
-                </script>
-                <?php
-            }else{
-                ?>
-                <script>
-                    alert("email or password invalid, please try again.");
-                </script>
-                <?php
+            if($count > 0){
+                $fetch = mysqli_fetch_assoc($sql);
+                $hashpassword = $fetch["password"];
+    
+                if($fetch["status"] == 0){
+                    ?>
+                    <script>
+                        alert("Please verify email account before login.");
+                    </script>
+                    <?php
+                }else if(password_verify($password, $hashpassword)){
+                    ?>
+                    <script>
+                        alert("login in successfully");
+                    </script>
+                    <?php
+                }else{
+                    ?>
+                    <script>
+                        alert("email or password invalid, please try again.");
+                    </script>
+                    <?php
+                }
             }
-        }
+                
     }
 
 ?>
