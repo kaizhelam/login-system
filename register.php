@@ -34,10 +34,10 @@
                     $mail->SMTPAuth=true;
                     $mail->SMTPSecure='tls';
     
-                    $mail->Username='lamkaizhe2001@gmail.com';
-                    $mail->Password='lam123456789';
+                    $mail->Username='email account';
+                    $mail->Password='email password';
     
-                    $mail->setFrom('lamkaizhe2001@gmail.com', 'OTP Verification');
+                    $mail->setFrom('email account', 'OTP Verification');
                     $mail->addAddress($_POST["email"]);
     
                     $mail->isHTML(true);
